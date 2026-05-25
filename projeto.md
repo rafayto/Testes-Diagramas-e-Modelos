@@ -115,10 +115,10 @@ classDiagram
         + created_at: timestamp
     }
     
-    RegistroController --> RegistroService : aciona
-    PainelController --> EstatisticaService : aciona
-    RelatorioController --> RelatorioService : aciona
-    UsuarioController --> UsuarioService : aciona
+    RegistroController --> RegistroService : usa
+    PainelController --> EstatisticaService : usa
+    RelatorioController --> RelatorioService : usa
+    UsuarioController --> UsuarioService : usa
 
     RegistroService --> RUN_RECORD : manipula
     RegistroService --> RUNNING_BELT : atualiza
