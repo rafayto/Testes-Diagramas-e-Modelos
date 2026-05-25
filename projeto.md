@@ -2,9 +2,6 @@
 classDiagram
     direction LR
 
-    %% ==========================================
-    %% CAMADA DE INTERFACE (WEB)
-    %% ==========================================
     class RegistroController {
         + iniciarTurno(req, res): void
         + registrarCheckpoint(req, res): void
@@ -23,9 +20,6 @@ classDiagram
         + obterPerfil(req, res): void
     }
 
-    %% ==========================================
-    %% CAMADA DE NEGÓCIO (SERVICES)
-    %% ==========================================
     class RegistroService {
         + iniciarTurno(userId, runningBeltId, kmInicial): void
         + registrarCheckpoint(runRecordId, kmAtual): void
@@ -45,9 +39,6 @@ classDiagram
         + obterDadosCompletos(userId): object
     }
 
-    %% ==========================================
-    %% OPERAÇÕES DIRETAS NAS TABELAS DO SEU DER
-    %% ==========================================
     class USERS {
         + id: int
         + nickname: varchar
@@ -123,26 +114,23 @@ classDiagram
         + encoding: varchar
         + created_at: timestamp
     }
-
-    %% ==========================================
-    %% RELACIONAMENTOS DIRETOS
-    %% ==========================================
+    
     RegistroController --> RegistroService : aciona
     PainelController --> EstatisticaService : aciona
     RelatorioController --> RelatorioService : aciona
     UsuarioController --> UsuarioService : aciona
 
     RegistroService --> RUN_RECORD : manipula
-    RegistroService --> RUNNING_BELT : atualiza status
+    RegistroService --> RUNNING_BELT : atualiza
     RegistroService --> SYNC_QUEUE : enfileira
-    RegistroService --> AUDIT : insere log
-    RegistroService --> STATISTICS : incrementa valor
+    RegistroService --> AUDIT : insere
+    RegistroService --> STATISTICS : adiciona
 
-    EstatisticaService --> STATISTICS : lê consolidados
-    EstatisticaService --> TEAMS : agrupa dados
+    EstatisticaService --> STATISTICS : lê
+    EstatisticaService --> TEAMS : agrupa
 
     RelatorioService --> REPORT : salva
-    RelatorioService --> STATISTICS : extrai métricas
+    RelatorioService --> STATISTICS : pega
 
-    UsuarioService --> USERS : busca público
-    UsuarioService --> USER_SENSITIVE : busca privado
+    UsuarioService --> USERS : público
+    UsuarioService --> USER_SENSITIVE : privado
