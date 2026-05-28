@@ -4,127 +4,148 @@ classDiagram
     class UsersController {
         <<Controller>>
         -usersService: UsersService
-        +users(req: Request, res: Response) void
-        +usersById(req: Request, res: Response) void
-        +usersTeam(req: Request, res: Response) void
+        +users(req: Request, res: Response) Promise~void~
+        +usersById(req: Request, res: Response) Promise~void~
+        +usersTeam(req: Request, res: Response) Promise~void~
     }
     class TeamsController {
         <<Controller>>
         -teamsService: TeamsService
-        +teams(req: Request, res: Response) void
-        +teamsRunningBelts(req: Request, res: Response) void
-        +teamsStatistics(req: Request, res: Response) void
+        +teams(req: Request, res: Response) Promise~void~
+        +teamsRunningBelts(req: Request, res: Response) Promise~void~
+        +teamsStatistics(req: Request, res: Response) Promise~void~
     }
     class RunningBeltsController {
         <<Controller>>
         -runningBeltsService: RunningBeltsService
-        +runningBelts(req: Request, res: Response) void
-        +runningBeltsRunRecords(req: Request, res: Response) void
+        +runningBelts(req: Request, res: Response) Promise~void~
+        +runningBeltsRunRecords(req: Request, res: Response) Promise~void~
     }
     class RunRecordsController {
         <<Controller>>
         -runRecordsService: RunRecordsService
-        +runRecordStart(req: Request, res: Response) void
-        +runRecordCheckpoint(req: Request, res: Response) void
-        +runRecordEnd(req: Request, res: Response) void
-        +runRecordById(req: Request, res: Response) void
-        +runRecordsHistory(req: Request, res: Response) void
+        +runRecordStart(req: Request, res: Response) Promise~void~
+        +runRecordCheckpoint(req: Request, res: Response) Promise~void~
+        +runRecordEnd(req: Request, res: Response) Promise~void~
+        +runRecordById(req: Request, res: Response) Promise~void~
+        +runRecordsHistory(req: Request, res: Response) Promise~void~
+        +syncRunRecords(req: Request, res: Response) Promise~void~
     }
     class StatisticsController {
         <<Controller>>
         -statisticsService: StatisticsService
-        +statisticsTeams(req: Request, res: Response) void
-        +statisticsUsers(req: Request, res: Response) void
-        +statisticsRanking(req: Request, res: Response) void
+        +statisticsTeams(req: Request, res: Response) Promise~void~
+        +statisticsUsers(req: Request, res: Response) Promise~void~
+        +statisticsRanking(req: Request, res: Response) Promise~void~
     }
     class AdminController {
         <<Controller>>
         -adminService: AdminService
-        +adminExportReport(req: Request, res: Response) void
+        +adminExportReport(req: Request, res: Response) Promise~void~
     }
 
     class UsersService {
         <<Service>>
         -usersRepository: UsersRepository
-        +getUsers() Promise
-        +getUserById(id: string) Promise
-        +getUserTeam(id: string) Promise
+        +getUsers() Promise~User[]~
+        +getUserById(id: string) Promise~User~
+        +getUserTeam(id: string) Promise~Team~
     }
     class TeamsService {
         <<Service>>
         -teamsRepository: TeamsRepository
-        +getTeams() Promise
-        +getTeamRunningBelts(teamId: string) Promise
-        +getTeamStatistics(teamId: string) Promise
+        +getTeams() Promise~Team[]~
+        +getTeamRunningBelts(teamId: string) Promise~RunningBelt[]~
+        +getTeamStatistics(teamId: string) Promise~Statistics[]~
     }
     class RunningBeltsService {
         <<Service>>
         -runningBeltsRepository: RunningBeltsRepository
-        +getRunningBelts() Promise
-        +getRunningBeltRunRecords(id: string) Promise
+        +getRunningBelts() Promise~RunningBelt[]~
+        +getRunningBeltRunRecords(id: string) Promise~RunRecord[]~
     }
     class RunRecordsService {
         <<Service>>
         -runRecordsRepository: RunRecordsRepository
-        +startRunRecord(body: any) Promise
-        +checkpointRunRecord(id: string, body: any) Promise
-        +endRunRecord(id: string, km_final: number) Promise
-        +getRunRecordById(id: string) Promise
-        +getRunRecordsHistory() Promise
+        +startRunRecord(dto: CreateRunRecordDto) Promise~RunRecord~
+        +checkpointRunRecord(id: string, dto: CheckpointDto) Promise~RunRecord~
+        +endRunRecord(id: string, km_final: number) Promise~RunRecord~
+        +getRunRecordById(id: string) Promise~RunRecord~
+        +getRunRecordsHistory() Promise~RunRecord[]~
+        +syncRunRecords(records: SyncRecord[]) Promise~SyncResult~
     }
     class StatisticsService {
         <<Service>>
         -statisticsRepository: StatisticsRepository
-        +getTeamsStatistics() Promise
-        +getUsersStatistics() Promise
-        +getStatisticsRanking() Promise
+        +getTeamsStatistics() Promise~Statistics[]~
+        +getUsersStatistics() Promise~Statistics[]~
+        +getStatisticsRanking() Promise~Statistics[]~
     }
     class AdminService {
         <<Service>>
         -adminRepository: AdminRepository
-        +exportReport() Promise
+        +exportReport(dto: CreateReportDto) Promise~Report[]~
+    }
+
+    class CreateRunRecordDto {
+        <<DTO>>
+        +running_belt_id: number
+        +user_id: number
+        +km_inicial: number
+    }
+    class CheckpointDto {
+        <<DTO>>
+        +user_id: number
+        +km: number
+    }
+    class CreateReportDto {
+        <<DTO>>
+        +generated_by: number
+        +format: string
+        +encoding: string
     }
 
     class UsersRepository {
         <<Repository>>
         -db: Database
-        +getUsers() Promise
-        +getUserById(id: string) Promise
-        +getUserTeam(id: string) Promise
+        +getUsers() Promise~User[]~
+        +getUserById(id: string) Promise~User~
+        +getUserTeam(id: string) Promise~Team~
     }
     class TeamsRepository {
         <<Repository>>
         -db: Database
-        +getTeams() Promise
-        +getTeamRunningBelts(teamId: string) Promise
-        +getTeamStatistics(teamId: string) Promise
+        +getTeams() Promise~Team[]~
+        +getTeamRunningBelts(teamId: string) Promise~RunningBelt[]~
+        +getTeamStatistics(teamId: string) Promise~Statistics[]~
     }
     class RunningBeltsRepository {
         <<Repository>>
         -db: Database
-        +getRunningBelts() Promise
-        +getRunningBeltRunRecords(id: string) Promise
+        +getRunningBelts() Promise~RunningBelt[]~
+        +getRunningBeltRunRecords(id: string) Promise~RunRecord[]~
     }
     class RunRecordsRepository {
         <<Repository>>
         -db: Database
-        +startRunRecord(body: any) Promise
-        +checkpointRunRecord(id: string, body: any) Promise
-        +endRunRecord(id: string, km_final: number) Promise
-        +getRunRecordById(id: string) Promise
-        +getRunRecordsHistory() Promise
+        +startRunRecord(dto: CreateRunRecordDto) Promise~RunRecord~
+        +checkpointRunRecord(id: string, dto: CheckpointDto) Promise~RunRecord~
+        +endRunRecord(id: string, km_final: number) Promise~RunRecord~
+        +getRunRecordById(id: string) Promise~RunRecord~
+        +getRunRecordsHistory() Promise~RunRecord[]~
+        +syncRunRecords(records: SyncRecord[]) Promise~SyncResult~
     }
     class StatisticsRepository {
         <<Repository>>
         -db: Database
-        +getTeamsStatistics() Promise
-        +getUsersStatistics() Promise
-        +getStatisticsRanking() Promise
+        +getTeamsStatistics() Promise~Statistics[]~
+        +getUsersStatistics() Promise~Statistics[]~
+        +getStatisticsRanking() Promise~Statistics[]~
     }
     class AdminRepository {
         <<Repository>>
         -db: Database
-        +exportReport() Promise
+        +exportReport(dto: CreateReportDto) Promise~Report[]~
     }
 
     class User {
@@ -200,6 +221,14 @@ classDiagram
     RunRecordsRepository ..> RunRecord : acessa
     StatisticsRepository ..> Statistics : acessa
     AdminRepository ..> Report : acessa
+
+    RunRecordsService ..> CreateRunRecordDto : recebe
+    RunRecordsService ..> CheckpointDto : recebe
+    AdminService ..> CreateReportDto : recebe
+
+    RunRecordsRepository ..> CreateRunRecordDto : usa
+    RunRecordsRepository ..> CheckpointDto : usa
+    AdminRepository ..> CreateReportDto : usa
 
     User --> Team : pertence a
     RunningBelt --> Team : pertence a
